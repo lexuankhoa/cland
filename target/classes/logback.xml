@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true" scan="true">
+<!-- 1.Về nhà tìm hiểu hết các level của log 
+	 2. Tạo ra file log format theo ngày-->
+	<appender name="STDOUT"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>
+				%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n
+			</Pattern>
+		</layout>
+	</appender>
+	<property name="LOG_PATH" value="E:/Log" />
+	<property name="LOG_ARCHIVE" value="${LOG_PATH}/application" />
+	<timestamp key="myTimestamp" datePattern="yyyy-MM-dd_HH" />
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_PATH}/k2-${myTimestamp}.log</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_PATH}/%d{yyyyMMdd}.log</fileNamePattern>
+			<maxHistory>31</maxHistory>
+			<totalSizeCap></totalSizeCap>
+		</rollingPolicy>
+		<encoder
+			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{5} - %msg%n
+			</Pattern>
+		</encoder>
+	</appender>
+	<logger name="edu.vinaenter" level="war" additivity="false">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+	</logger>
+</configuration>
