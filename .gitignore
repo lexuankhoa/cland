@@ -1,6 +1,12 @@
 /target/
 /data/
 /.idea/
+/.vscode/
+/.settings/
+/.classpath
+/.project
+/null/
+/src/main/webapp/WEB-INF/resources/files/
 *.log
 /.m2/
 /.tools/
