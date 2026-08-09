@@ -35,7 +35,7 @@ public class UserDAO extends AbstractDAO<User> {
 				List<User> list = new ArrayList<User>();
 				while (rs.next()) {
 					User e = new User(rs.getInt("id"), rs.getString("username"), rs.getString("fullname"),
-							rs.getString("password"), new Role(rs.getInt("id"),rs.getString("name")));
+							rs.getString("password"), new Role(rs.getInt("role_id"), rs.getString("name")));
 					list.add(e);
 				}
 				return list;
@@ -44,7 +44,7 @@ public class UserDAO extends AbstractDAO<User> {
 		});
 	}
 	public List<User> getAll(int offset, int rowCount) {
-		final String SQL = "SELECT u.*,r.name FROM users AS u INNER JOIN roles AS r WHERE u.role_id = r.id ORDER BY u.id DESC LIMIT ?, ?";
+		final String SQL = "SELECT u.*, r.name FROM users AS u INNER JOIN roles AS r ON u.role_id = r.id ORDER BY u.id DESC LIMIT ?, ?";
 		return jdbcTemplate.query(SQL, new ResultSetExtractor<List<User>>() {
 			@Override
 			public List<User> extractData(ResultSet rs) throws SQLException, DataAccessException {
@@ -95,8 +95,9 @@ public class UserDAO extends AbstractDAO<User> {
 	}
 
 	public List<User> getSearch(String search,int offset, int rowCount) {
-		String sql = "SELECT * FROM users WHERE username LIKE ? ORDER BY id DESC LIMIT ?,?";
-		return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), "%" + search + "%", offset, rowCount);
+		String sql = "SELECT u.*, r.name FROM users u INNER JOIN roles r ON u.role_id = r.id "
+				+ "WHERE u.username LIKE ? ORDER BY u.id DESC LIMIT ?, ?";
+		return jdbcTemplate.query(sql, getRowMapper(), "%" + search + "%", offset, rowCount);
 	}
 
 	public int totalRowSearch(String search) {
@@ -104,8 +105,8 @@ public class UserDAO extends AbstractDAO<User> {
 		return jdbcTemplate.queryForObject(sql, Integer.class, "%" + search + "%");
 	}
 	public User findByUsername(String username) {
-		final String SQL = "SELECT u.*,r.name FROM users AS u INNER JOIN roles AS r ON u.role_id = r.id  WHERE u.username LIKE ?";
-		return jdbcTemplate.queryForObject(SQL, getRowMapper(), "%"+username+"%");
+		final String SQL = "SELECT u.*, r.name FROM users AS u INNER JOIN roles AS r ON u.role_id = r.id WHERE u.username = ?";
+		return jdbcTemplate.queryForObject(SQL, getRowMapper(), username);
 	}
 
 }

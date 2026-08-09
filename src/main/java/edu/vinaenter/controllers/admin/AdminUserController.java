@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -42,7 +42,7 @@ public class AdminUserController {
 	@Autowired
 	private RoleService roleService;
 	@Autowired
-	BCryptPasswordEncoder bCryptPasswordEncoder;
+	PasswordEncoder passwordEncoder;
 //	@Autowired // DI
 //	private DateValidator dateValidator;
 	private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
@@ -106,7 +106,7 @@ public class AdminUserController {
 		if (rs.hasErrors()) {
 			return "admin.user.add";
 		}
-		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		User users = new User(user.getUsername(), user.getFullname(), user.getPassword(), role);
 		if (userService.save(users) > 0) {
 			rd.addFlashAttribute("msg", messageSource.getMessage("msg.success", null, Locale.getDefault()));
@@ -140,7 +140,12 @@ public class AdminUserController {
 		if (rs.hasErrors()) {
 			return "admin.user.edit";
 		}
-		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+		User currentUser = userService.findById(user.getId());
+		if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
+			user.setPassword(currentUser.getPassword());
+		} else {
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
+		}
 		User users = new User(user.getId(), user.getUsername(), user.getFullname(), user.getPassword(), role);
 		if (userService.update(users) > 0) {
 			rd.addFlashAttribute("msg", messageSource.getMessage("edit.success", null, Locale.getDefault()));

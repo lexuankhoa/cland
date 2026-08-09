@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
@@ -22,7 +21,7 @@ public class LandsDAO extends AbstractDAO<Lands> {
 	JdbcTemplate jdbcTemplate;
 
 	public List<Lands> getAll(int offset, int rowCount) {
-		final String SQL = "SELECT l.*, c.cname  FROM lands AS l INNER JOIN categories AS c WHERE l.cid = c.cid ORDER BY l.lid DESC LIMIT ?, ?";
+		final String SQL = "SELECT l.*, c.cname FROM lands AS l INNER JOIN categories AS c ON l.cid = c.cid ORDER BY l.lid DESC LIMIT ?, ?";
 
 		return jdbcTemplate.query(SQL, new ResultSetExtractor<List<Lands>>() {
 			List<Lands> lands = new ArrayList<Lands>();
@@ -61,8 +60,11 @@ public class LandsDAO extends AbstractDAO<Lands> {
 
 	@Override
 	public Lands findById(int id) {
-		String sql = "SELECT * FROM lands WHERE lid =?";
-		return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Lands.class), id);
+		String sql = "SELECT l.*, c.cname FROM lands l INNER JOIN categories c ON l.cid = c.cid WHERE l.lid = ?";
+		return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new Lands(rs.getInt("lid"), rs.getString("lname"),
+				rs.getString("description"), rs.getTimestamp("date_create"), rs.getString("picture"),
+				rs.getInt("area"), rs.getString("address"), rs.getInt("count_views"),
+				new Category(rs.getInt("cid"), rs.getString("cname"))), id);
 	}
 	@Override
 	public int update(Lands t) {

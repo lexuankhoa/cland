@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <div class="col-md-10">
@@ -25,7 +25,7 @@
 										class="form-control" value="${userFindId.fullname}">
 								</div>
 								<div class="form-group">
-									<label>Nhập Password</label> <input type="text" name="password"
+									<label>Nhập Password (để trống nếu không đổi)</label> <input type="password" name="password"
 										class="form-control" value="">
 								</div>
 								<div class="form-group">
@@ -33,7 +33,7 @@
 										<c:choose>
 											<c:when test="${not empty roleList }">
 												<c:forEach items="${roleList}" var="role">
-													<option value=${role.id }>${role.name}</option>
+											<option value="${role.id}" ${role.id == userFindId.role.id ? 'selected' : ''}>${role.name}</option>
 												</c:forEach>
 											</c:when>
 											<c:otherwise>

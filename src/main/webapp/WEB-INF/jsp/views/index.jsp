@@ -9,7 +9,7 @@
 			alt="Paris, France" data-description="Eiffel Tower and Champ de Mars"
 			data-large-src="${contextPath }/images/slides/megamind_07.jpg" /></li>
 		<li><img src="${contextPath }/images/thumbs/wall-e.jpg"
-			alt="MontrÃ©al, QC, Canada"
+			alt="Montréal, QC, Canada"
 			data-large-src="${contextPath }/images/slides/wall-e.jpg"
 			data-description="Eiffel Tower and Champ de Mars" /></li>
 		<li><img
