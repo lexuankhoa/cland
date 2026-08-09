@@ -23,7 +23,7 @@ public class FileUtil {
 		}
 		if(!GlobalConstant.EMPTY.equals( file.getOriginalFilename())) {
 			//String userDir = System.getProperty("user.dir");
-			//String userDir = System.getenv(GlobalConstant.ENV_PATH_PROJECT); // biáº¿n mÃ´i trÆ°á»�ng
+            // String userDir = System.getenv(GlobalConstant.ENV_PATH_PROJECT); // biến môi trường
 			String userDir = request.getServletContext().getRealPath("")+ "/WEB-INF/resources";
 			String dirPath = userDir + File.separator + GlobalConstant.DIR_UPLOAD;
 			File saveDir = new File(dirPath);
@@ -45,7 +45,7 @@ public class FileUtil {
 
 	public static String rename(String fileName) {
 		if (!GlobalConstant.EMPTY.equals(fileName)) {
-			StringBuilder sb = new StringBuilder(); // ná»‘i chuá»—i tháº¿ dáº¥u +
+            StringBuilder sb = new StringBuilder(); // nối chuỗi và thêm hậu tố duy nhất
 			sb.append(FilenameUtils.getBaseName(fileName)).append("-").append(System.nanoTime()).append(".")
 					.append(FilenameUtils.getExtension(fileName));
 			return sb.toString();

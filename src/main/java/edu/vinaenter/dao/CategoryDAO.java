@@ -21,9 +21,9 @@ public class CategoryDAO extends AbstractDAO<Category> {
 		return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Category.class));
 	}
 	public List<Category> getAll2() {
-		String sql = "SELECT categories.cid,cname,COUNT(lands.cid) FROM categories "
+		String sql = "SELECT categories.cid, cname, COUNT(lands.cid) AS total_land FROM categories "
 				+ "LEFT JOIN lands ON categories.cid = lands.cid "
-				+ "GROUP BY lands.cid ORDER BY COUNT(lands.cid) DESC ";
+				+ "GROUP BY categories.cid, cname ORDER BY total_land DESC, categories.cid DESC";
 		//ORDER BY COUNT(lands.cid) DESC
 		return jdbcTemplate.query(sql, new ResultSetExtractor<List<Category>>() {
 			List<Category> list = new ArrayList<Category>();
@@ -31,8 +31,8 @@ public class CategoryDAO extends AbstractDAO<Category> {
 			@Override
 			public List<Category> extractData(ResultSet rs) throws SQLException, DataAccessException {
 				while (rs.next()) {
-					list.add(new Category(rs.getInt("categories.cid"), rs.getString("cname"),
-							rs.getInt("COUNT(lands.cid)")));
+					list.add(new Category(rs.getInt("cid"), rs.getString("cname"),
+							rs.getInt("total_land")));
 				}
 				return list;
 			}
@@ -131,17 +131,17 @@ public class CategoryDAO extends AbstractDAO<Category> {
 		return jdbcTemplate.queryForObject(sql, Integer.class, "%" + search + "%");
 	}
 	public List<Category> getCatHot() {
-		String sql = "SELECT categories.cid,cname,COUNT(lands.cid) FROM categories "
+		String sql = "SELECT categories.cid, cname, COUNT(lands.cid) AS total_land FROM categories "
 				+ "LEFT JOIN lands ON categories.cid = lands.cid "
-				+ "GROUP BY lands.cid ORDER BY COUNT(lands.cid) DESC LIMIT 3";
+				+ "GROUP BY categories.cid, cname ORDER BY total_land DESC, categories.cid DESC LIMIT 3";
 		return jdbcTemplate.query(sql, new ResultSetExtractor<List<Category>>() {
 			List<Category> list = new ArrayList<Category>();
 
 			@Override
 			public List<Category> extractData(ResultSet rs) throws SQLException, DataAccessException {
 				while (rs.next()) {
-					list.add(new Category(rs.getInt("categories.cid"), rs.getString("cname"),
-							rs.getInt("COUNT(lands.cid)")));
+					list.add(new Category(rs.getInt("cid"), rs.getString("cname"),
+							rs.getInt("total_land")));
 				}
 				return list;
 			}

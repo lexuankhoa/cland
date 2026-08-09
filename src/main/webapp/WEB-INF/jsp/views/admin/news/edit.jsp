@@ -27,7 +27,7 @@
 									<c:choose>
 										<c:when test="${not empty catList }">
 											<c:forEach items="${catList}" var="item">
-												<option value="${item.cid}">${item.cname }</option>
+												<option value="${item.cid}" ${item.cid == landFindId.category.cid ? 'selected' : ''}>${item.cname }</option>
 											</c:forEach>
 										</c:when>
 										<c:otherwise>

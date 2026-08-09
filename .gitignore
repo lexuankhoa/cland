@@ -1,0 +1,7 @@
+/target/
+/data/
+/.idea/
+*.log
+/.m2/
+/.tools/
+/apache-maven-*-bin.zip

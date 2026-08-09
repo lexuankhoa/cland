@@ -119,10 +119,16 @@ public class AdminLandsController {
 	}
 
 	@PostMapping(URLConstant.EDIT + "/{lid}")
-	public String edit(HttpServletRequest request, @ModelAttribute("lands") Lands lands, BindingResult rs,
+	public String edit(HttpServletRequest request, @PathVariable int lid,
+			@ModelAttribute("lands") Lands lands, BindingResult rs,
 			@RequestParam("file") MultipartFile file, RedirectAttributes rd) {
-		String fileName = FileUtil.upload(file, request);
-		lands.setPicture(fileName);
+		Lands currentLand = landsService.findById(lid);
+		lands.setLid(lid);
+		if (file != null && !file.isEmpty()) {
+			lands.setPicture(FileUtil.upload(file, request));
+		} else {
+			lands.setPicture(currentLand.getPicture());
+		}
 		if (landsService.update(lands) > 0) {
 			rd.addFlashAttribute("msg", messageSource.getMessage("edit.success", null, Locale.getDefault()));
 			return "redirect:/admin/news/index";
